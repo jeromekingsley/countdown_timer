@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f3e6ff, #d8eefe);
+            color: #333;
+        }
+
+        .timer-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #timeInput {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls button {
+            padding: 12px 25px;
+            font-size: 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #startBtn {
+            background: linear-gradient(45deg, #6a85b6, #bac8e0);
+            color: white;
+        }
+
+        #pauseBtn {
+            background: linear-gradient(45deg, #f9c74f, #ffc107);
+            color: white;
+        }
+
+        #resetBtn {
+            background: linear-gradient(45deg, #ff6f61, #d90429);
+            color: white;
+        }
+
+        .controls button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        #countdownDisplay {
+            font-size: 64px;
+            margin-top: 20px;
+            font-weight: bold;
+            animation: pulse 1s infinite ease-in-out;
+            color: #333;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-container">
+        <h1>⏳ Countdown Timer</h1>
+        <input type="number" id="timeInput" placeholder="Enter time in seconds">
+        <div class="controls">
+            <button id="startBtn">Start</button>
+            <button id="pauseBtn" disabled>Pause</button>
+            <button id="resetBtn" disabled>Reset</button>
+        </div>
+        <h2 id="countdownDisplay">00:00</h2>
+    </div>
+    <script>
+        let countdownInterval;
+        let remainingTime = 0;
+
+        const timeInput = document.getElementById('timeInput');
+        const countdownDisplay = document.getElementById('countdownDisplay');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function startCountdown() {
+            if (remainingTime === 0) {
+                remainingTime = parseInt(timeInput.value) || 0;
+            }
+            if (remainingTime > 0) {
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                resetBtn.disabled = false;
+                countdownInterval = setInterval(() => {
+                    if (remainingTime > 0) {
+                        remainingTime--;
+                        countdownDisplay.textContent = formatTime(remainingTime);
+                    } else {
+                        clearInterval(countdownInterval);
+                        alert('🎉 Time is up!');
+                        resetCountdown();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseCountdown() {
+            clearInterval(countdownInterval);
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        }
+
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            remainingTime = 0;
+            countdownDisplay.textContent = "00:00";
+            timeInput.value = '';
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            resetBtn.disabled = true;
+        }
+
+        startBtn.addEventListener('click', startCountdown);
+        pauseBtn.addEventListener('click', pauseCountdown);
+        resetBtn.addEventListener('click', resetCountdown);
+    </script>
+</body>
+</html>
